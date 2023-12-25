@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"io"
+	"net/http"
 	"pokedex/src/models"
 	"strconv"
 
@@ -16,40 +18,40 @@ func Init(db *[]models.Pokemon) *echo.Echo {
 		return c.JSON(200, db)
 	})
 
-	// g.GET("/image/:id", func(c echo.Context) error {
-	// 	id := c.Param("id")
-	// 	idInt, err := strconv.Atoi(id)
-	// 	if err != nil {
-	// 		return c.JSON(400, map[string]string{
-	// 			"message": "Invalid ID",
-	// 		})
-	// 	}
+	g.GET("/image/:id", func(c echo.Context) error {
+		id := c.Param("id")
+		idInt, err := strconv.Atoi(id)
+		if err != nil {
+			return c.JSON(400, map[string]string{
+				"message": "Invalid ID",
+			})
+		}
 
-	// 	for _, pokemon := range *db {
-	// 		if pokemon.ID == idInt {
-	// 			imageURL := pokemon.Image.Hires
+		for _, pokemon := range *db {
+			if pokemon.ID == idInt {
+				imageURL := pokemon.Image.Hires
 
-	// 			response, err := http.Get(imageURL)
-	// 			if err != nil {
-	// 				return c.String(http.StatusInternalServerError, "Failed to fetch image")
-	// 			}
-	// 			defer response.Body.Close()
+				response, err := http.Get(imageURL)
+				if err != nil {
+					return c.String(http.StatusInternalServerError, "Failed to fetch image")
+				}
+				defer response.Body.Close()
 
-	// 			contentType := response.Header.Get("Content-Type")
-	// 			c.Response().Header().Set("Content-Type", contentType)
+				contentType := response.Header.Get("Content-Type")
+				c.Response().Header().Set("Content-Type", contentType)
 
-	// 			_, err = io.Copy(c.Response().Writer, response.Body)
-	// 			if err != nil {
-	// 				return c.String(http.StatusInternalServerError, "Failed to copy image data")
-	// 			}
+				_, err = io.Copy(c.Response().Writer, response.Body)
+				if err != nil {
+					return c.String(http.StatusInternalServerError, "Failed to copy image data")
+				}
 
-	// 			return nil
-	// 		}
-	// 	}
-	// 	return c.JSON(404, map[string]string{
-	// 		"message": "Pokemon not found",
-	// 	})
-	// })
+				return nil
+			}
+		}
+		return c.JSON(404, map[string]string{
+			"message": "Pokemon not found",
+		})
+	})
 
 	g.GET("/:id", func(c echo.Context) error {
 		id := c.Param("id")
