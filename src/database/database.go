@@ -7,7 +7,7 @@ import (
 )
 
 func New() (*[]models.Pokemon, error) {
-	pokedexJson, err := os.ReadFile("src/data/pokedex.json")
+	pokedexJson, err := os.ReadFile("static/pokedex.json")
 	if err != nil {
 		return nil, err
 	}
