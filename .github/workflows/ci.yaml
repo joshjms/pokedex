@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Deploy to server
 
 on:
   push:
@@ -8,11 +8,21 @@ on:
 
 jobs:
 
-  build:
-
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v3 
+      - name: Deploy
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          USERNAME: ${{ secrets.SSH_USERNAME }}
+          HOSTNAME: ${{ secrets.SSH_HOSTNAME }}
+      
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key $USERNAME@$HOSTNAME "
+            cd ~/pokedex &&
+            git pull -v &&
+            sudo docker-compose up -d --build
+            "

@@ -10,13 +10,13 @@ import (
 func Init(db *[]models.Pokemon) *echo.Echo {
 	e := echo.New()
 
-	g := e.Group("/api/v1")
+	g := e.Group("/pokemon")
 
-	g.GET("/pokemon", func(c echo.Context) error {
+	g.GET("/", func(c echo.Context) error {
 		return c.JSON(200, db)
 	})
 
-	// g.GET("/pokemon/image/:id", func(c echo.Context) error {
+	// g.GET("/image/:id", func(c echo.Context) error {
 	// 	id := c.Param("id")
 	// 	idInt, err := strconv.Atoi(id)
 	// 	if err != nil {
@@ -51,7 +51,7 @@ func Init(db *[]models.Pokemon) *echo.Echo {
 	// 	})
 	// })
 
-	g.GET("/pokemon/:id", func(c echo.Context) error {
+	g.GET("/:id", func(c echo.Context) error {
 		id := c.Param("id")
 		idInt, err := strconv.Atoi(id)
 		if err != nil {
