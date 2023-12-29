@@ -12,7 +12,7 @@ import (
 func Init(db *[]models.Pokemon) *echo.Echo {
 	e := echo.New()
 
-	g := e.Group("/pokemon")
+	g := e.Group("/pokedex/pokemon")
 
 	g.GET("/", func(c echo.Context) error {
 		return c.JSON(200, db)
